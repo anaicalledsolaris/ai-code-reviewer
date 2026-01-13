@@ -13,11 +13,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-'''
+"""
 Script to instruction fine-tune causal language models on a Hub dataset
 
 Adapted from huggingface/transformers: https://github.com/huggingface/transformers/blob/main/examples/pytorch/language-modeling/run_clm.py
-'''
+"""
 
 import logging
 import math
@@ -106,9 +106,10 @@ def main():
     ###############
     raw_datasets = load_dataset(data_args.dataset_name)
     logger.info(
-        f"Training on the following datasets and their proportions: {[split + ' : ' + str(dset.num_rows) for split, dset in raw_datasets.items()]}")
+        f"Training on the following datasets and their proportions: {[split + ' : ' + str(dset.num_rows) for split, dset in raw_datasets.items()]}"
+    )
     with training_args.main_process_first(desc="Log a few random samples from the raw training set"):
-        for index in random.sample(range(len(raw_datasets[\"train\"])), 3):
+        for index in random.sample(range(len(raw_datasets["train"])), 3):
             logger.info(f"Sample {index} of the raw training set:\n\n{raw_datasets['train'][index]['messages']}")
 
     #########################
@@ -132,13 +133,13 @@ def main():
     logger.info(f"Added {num_added_tokens} new tokens: {dialogue_tokens}")
 
     if training_args.do_train:
-        column_names = list(raw_datasets[\"train\"].features)
+        column_names = list(raw_datasets["train"].features)
     else:
-        column_names = list(raw_datasets[\"test\"].features)
+        column_names = list(raw_datasets["test"].features)
     text_column_name = "text" if "text" in column_names else column_names[0]
 
     with training_args.main_process_first(desc="Log a few random samples from the training set"):
-        for index in random.sample(range(len(raw_datasets[\"train\"])), 3):
+        for index in random.sample(range(len(raw_datasets["train"])), 3):
             logger.info(f"Sample {index} of the raw training set:\n\n{raw_datasets['train'][index]['text']}")
 
     # since this will be pickled to avoid _LazyModule error in Hasher force logger loading before tokenize_function
@@ -174,7 +175,8 @@ def main():
             logger.warning(
                 "The chosen tokenizer supports a `model_max_length` that is longer than the default `block_size` value"
                 " of 1024. If you would like to use a longer `block_size` up to `tokenizer.model_max_length` you can"
-                " override this default with `--block_size xxx`.")
+                " override this default with `--block_size xxx`."
+            )
             block_size = 1024
     else:
         if data_args.block_size > tokenizer.model_max_length:
